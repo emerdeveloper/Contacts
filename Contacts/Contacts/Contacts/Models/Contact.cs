@@ -22,6 +22,8 @@ namespace Contacts.Models
 
         public string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
 
+        public byte[] ImageArray { get; set; }
+
         public string ImageFullPath
         {
             get
@@ -31,7 +33,7 @@ namespace Contacts.Models
                     return "profile.png";
                 }
 
-                return string.Format("http://contactsbackprep.azurewebsites.net{0}", Image.Substring(1));
+                return string.Format("https://contactsxamarintata.azurewebsites.net{0}", Image.Substring(1));
             }
         }
 

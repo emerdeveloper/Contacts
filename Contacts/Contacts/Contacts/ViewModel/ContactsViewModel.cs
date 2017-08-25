@@ -51,49 +51,64 @@ namespace Contacts.ViewModel
         #region Constructors
         public ContactsViewModel()
         {
+            instance = this;
+
             apiService = new ApiService();
             dialogService = new DialogService();
 
             MyContacts = new ObservableCollection<ContactItemViewModel>();
 
-            LoadContacts();
+            IsRefreshing = false;
+        }
+        #endregion
+
+        #region Singleton
+        private static ContactsViewModel instance;
+
+        public static ContactsViewModel GetInstance()
+        {
+            if (instance == null)
+            {
+                instance = new ContactsViewModel();
+            }
+
+            return instance;
         }
         #endregion
 
         #region Methods
         public async void LoadContacts()
         {
-           if (!CrossConnectivity.Current.IsConnected)
-            {
-                await dialogService.ShowMessage("Error", "Verifica tu conección a internet");//change Display for ForeingExchangePage
-                VisibleFlag = true;
-                return;
-            }
+            IsRefreshing = true;
+            /* if (!CrossConnectivity.Current.IsConnected)
+              {
+                  await dialogService.ShowMessage("Error", "Verifica tu conección a internet");//change Display for ForeingExchangePage
+                  VisibleFlag = true;
+                  return;
+              }
 
-            //Check get access to internet
-            var isRechable = await CrossConnectivity.Current.IsRemoteReachable("www.google.com");
-            if (isRechable)
-            {
-                await dialogService.ShowMessage("Error", "No hay acceso a internet");//change Display for ForeingExchangePage
-                VisibleFlag = true;
-                return;
-            }
-            IsRefreshing = true;//show waiting
-            VisibleFlag = false;
+              //Check get access to internet
+              var isRechable = await CrossConnectivity.Current.IsRemoteReachable("www.google.com");
+              if (isRechable)
+              {
+                  await dialogService.ShowMessage("Error", "No hay acceso a internet");//change Display for ForeingExchangePage
+                  VisibleFlag = true;
+                  return;
+              }*/
+
+            //VisibleFlag = false;
             var response = await apiService.Get<Contact>(
                 "https://contactsxamarintata.azurewebsites.net",
                 "/api",
                 "/Contacts");
-            IsRefreshing = false;//Hide Waiting
+            
             if (!response.IsSuccess)
             {
                 await dialogService.ShowMessage("Error", response.Message);
-                IsRefreshing = false;//Hide Waiting
                 return;
             }
-
-            var Contacts = (List<Contact>)response.Result;
-            ReloadContacts(Contacts);
+            IsRefreshing = false;
+            ReloadContacts((List<Contact>)response.Result);
         }
 
         private void ReloadContacts(List<Contact> contacts)
@@ -112,33 +127,16 @@ namespace Contacts.ViewModel
                 });
             }
         }
+        #endregion
+
+        #region Commands
+        public ICommand RefreshCommand { get { return new RelayCommand(Refresh); } }
 
         private void Refresh()
         {
             IsRefreshing = true;
             LoadContacts();
             IsRefreshing = false;
-        }
-        #endregion
-
-        #region Commands
-        public ICommand RefreshCommand
-        {
-            get { return new RelayCommand(Refresh); }
-        }
-        #endregion
-
-        #region Singleton
-        private static ContactsViewModel instance;
-
-        public static ContactsViewModel GetInstance()
-        {
-            if (instance == null)
-            {
-                instance = new ContactsViewModel();
-            }
-
-            return instance;
         }
         #endregion
     }

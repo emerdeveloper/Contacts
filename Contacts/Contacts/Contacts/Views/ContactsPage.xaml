@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-                 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                 x:Class="Contacts.Views.ContactsPage"
-                 xmlns:controls="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin.Abstractions"
-                 Title="Contacts"
-                 BindingContext="{Binding Main, Source={StaticResource Locator}}">
+<ContentPage 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Contacts.Views.ContactsPage"
+    Title="Contacts"
+    BindingContext="{Binding Main, Source={StaticResource Locator}}">
 
     <ContentPage.Content>
         <StackLayout
@@ -12,13 +12,13 @@
                 BindingContext="{Binding Contacts}">
 
             <ListView
+                ItemTemplate="{StaticResource ContactsDataTemplate}"
                 ItemsSource="{Binding MyContacts}"
                 HasUnevenRows="True"
                 IsPullToRefreshEnabled="True"
                 RefreshCommand="{Binding RefreshCommand}"
                 IsRefreshing="{Binding IsRefreshing, Mode=TwoWay}">
-                >
-                <ListView.ItemTemplate>
+                <!-- <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <Grid Padding="8">
@@ -32,13 +32,13 @@
                                 WidthRequest="80"
                                 HeightRequest="80">
                                 </controls:CircleImage>
-                                <!--<Image
+                                <Image
                                             Grid.Column="0"
                                             HeightRequest="80"
                                             WidthRequest="80"
                                             Source="{Binding ImageFullPath}">
 
-                                    </Image>-->
+                                    </Image>
                                 <StackLayout Grid.Column="1">
                                     <Label
                                         TextColor="Black"
@@ -59,9 +59,9 @@
                             </Grid>
                         </ViewCell>
                     </DataTemplate>
-                </ListView.ItemTemplate>
+                </ListView.ItemTemplate>-->
             </ListView>
-            <StackLayout
+            <!--<StackLayout
                 Grid.ColumnSpan="2"
                 Padding="2,12,2,12"
                 BackgroundColor="Black">
@@ -70,10 +70,12 @@
                     TextColor="White" 
                     VerticalOptions="Center" 
                     BackgroundColor="Black"/>
-            </StackLayout>
+            </StackLayout>-->
 
         </StackLayout>
-        
+        <!--ADD contact-->
     </ContentPage.Content>
-
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Icon="addUser.png" Command="{Binding AddContactCommand}"/>
+    </ContentPage.ToolbarItems>
 </ContentPage>
